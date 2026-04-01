@@ -1,0 +1,13 @@
+omni_portfolio_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "md:your_database_name"
+      schema: dbt_dev
+      threads: 4
+    prod:
+      type: duckdb
+      path: "md:your_database_name"
+      schema: dbt_prod
+      threads: 4

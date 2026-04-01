@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: stg_nyc_311_requests
+    description: >
+      Staged NYC 311 service requests. Renames raw columns to snake_case,
+      casts date fields, and calculates response time in hours.
+      Excludes records where response time exceeds 30 days (720 hours).
+    columns:
+      - name: complaint_id
+        description: Unique identifier for each complaint
+        tests:
+          - unique
+          - not_null
+      - name: created_at
+        description: Date and time the complaint was created
+        tests:
+          - not_null
+      - name: complaint_type
+        description: Type of complaint filed
+        tests:
+          - not_null
+      - name: borough
+        description: NYC borough where complaint was filed
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['MANHATTAN', 'BROOKLYN']
+      - name: response_time_hours
+        description: >
+          Hours between complaint creation and closure.
+          Null if over 720 hours (30 days).

@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: nyc_311
+    database: omni_portfolio
+    schema: uploads
+    tables:
+      - name: nyc_311_requests
+        identifier: omni_upload_tcda5647f6c9145268fbf154ef2020f38
+        description: NYC 311 service requests — Manhattan and Brooklyn 2024

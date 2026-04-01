@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: mart_complaint_volume
+    description: >
+      Monthly complaint volume aggregated by borough and complaint type.
+      Includes response time metrics and SLA performance indicators.
+    columns:
+      - name: complaint_month
+        description: First day of the month for the complaint period
+        tests:
+          - not_null
+      - name: borough
+        description: NYC borough — MANHATTAN or BROOKLYN
+        tests:
+          - not_null
+      - name: complaint_type
+        description: Type of complaint filed
+        tests:
+          - not_null
+      - name: complaint_count
+        description: Total number of complaints in this month/borough/type combination
+        tests:
+          - not_null
+      - name: avg_response_time_hours
+        description: Average hours to close complaints in this group
+      - name: median_response_time_hours
+        description: Median hours to close complaints in this group
+      - name: resolved_within_24hrs
+        description: Count of complaints closed within 24 hours
+      - name: resolved_within_72hrs
+        description: Count of complaints closed within 72 hours
+
+  - name: mart_agency_performance
+    description: >
+      Agency response time performance aggregated by agency, complaint type,
+      and borough. Used for the agency leaderboard analysis.
+    columns:
+      - name: agency_code
+        description: Short agency code e.g. NYPD, HPD, DSNY
+        tests:
+          - not_null
+      - name: agency_name
+        description: Full agency name
+        tests:
+          - not_null
+      - name: complaint_type
+        description: Type of complaint handled
+        tests:
+          - not_null
+      - name: borough
+        description: NYC borough
+        tests:
+          - not_null
+      - name: complaint_count
+        description: Total complaints handled by this agency/type/borough combination
+        tests:
+          - not_null
+      - name: avg_response_time_hours
+        description: Average hours to close complaints
+      - name: median_response_time_hours
+        description: Median hours to close complaints
+      - name: min_response_time_hours
+        description: Fastest closure time in hours
+      - name: max_response_time_hours
+        description: Slowest closure time in hours
+      - name: pct_resolved_within_24hrs
+        description: Percentage of complaints closed within 24 hours
+
+  - name: mart_complaint_volume_incremental
+    description: >
+      Incremental version of mart_complaint_volume. Demonstrates dbt incremental 
+      materialization — on first run builds the full table, on subsequent runs 
+      only processes new records where created_at exceeds the current max. 
+      Uses MD5 hash as a unique key for upsert logic.
+    columns:
+      - name: complaint_month_borough_type
+        description: MD5 hash surrogate key for upsert deduplication
+        tests:
+          - unique
+          - not_null
+      - name: complaint_month
+        description: First day of the complaint month
+        tests:
+          - not_null
+      - name: complaint_count
+        description: Total complaints in this month/borough/type combination
+        tests:
+          - not_null
